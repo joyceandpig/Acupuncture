@@ -1,0 +1,52 @@
+[Open Files]
+Active File Display Mode=3
+Active File Index=2
+Open File Line0=4857
+Open File Line1=4516
+Open File Line2=263
+Open File Pos0=5233
+Open File Pos1=4490
+Open File Pos2=472
+Open File Window Pos0=0,1,-1,-1,-8,-30,671,0,1342,658
+Open File Window Pos1=0,1,-1,-1,-8,-30,0,0,671,658
+Open File Window Pos2=2,3,-1,-1,-8,-30,50,50,1193,508
+Open File0=C:\Users\Administrator\Desktop\STM32F103RB_IIC7.23\Utilities\stm32_eval\AD5933\AD5933.c
+Open File1=C:\Users\Administrator\Desktop\AD5933 I2C_Master wednesday 18th\I2C_Master.c
+Open File2=C:\Users\Administrator\Desktop\新建文本文档.txt
+Open File3=
+Remember Files=1
+
+[Project Information]
+Project Start=DE07070004000A000E002C003000000064
+Working Time=105502
+
+[Folders]
+..\Libraries\=1
+..\Libraries\ - CMSIS=1
+..\Libraries\ - CMSIS - CM3 - CoreSupport=1
+..\Libraries\ - CMSIS - CM3 - DeviceSupport - ST=1
+..\Libraries\ - CMSIS - CM3 - DeviceSupport - ST - STM32F10x=1
+..\Libraries\ - CMSIS - CM3 - DeviceSupport - ST - STM32F10x - startup=1
+..\Libraries\ - CMSIS - CM3 - DeviceSupport - ST - STM32F10x - startup - arm=1
+..\Libraries\ - STM32F10x_StdPeriph_Driver - inc=1
+..\_htmresc\=1
+.\=1
+.\ - Libraries=1
+.\ - Project=1
+.\ - Utilities=1
+.\ - Utilities - stm32_eval=1
+.\ - Utilities - stm32_eval - AD5933=1
+.\ - Utilities - stm32_eval - IIC=1
+.\Libraries\=1
+.\Libraries\ - CMSIS=1
+.\Libraries\ - CMSIS - CM3=1
+.\Libraries\ - CMSIS - CM3 - CoreSupport=1
+.\Libraries\ - CMSIS - CM3 - DeviceSupport=1
+.\Libraries\ - CMSIS - CM3 - DeviceSupport - ST=1
+.\Libraries\ - CMSIS - CM3 - DeviceSupport - ST - STM32F10x=1
+.\Libraries\ - STM32F10x_StdPeriph_Driver=1
+.\Project\=1
+.\Utilities\=1
+.\Utilities\ - stm32_eval=1
+.\Utilities\ - stm32_eval - AD5933=1
+.\Utilities\ - stm32_eval - IIC=1

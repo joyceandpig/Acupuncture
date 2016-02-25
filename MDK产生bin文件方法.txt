@@ -1,0 +1,15 @@
+1、打开option for target选项，选择user栏目
+2、选择Run User Programs After Build/Rebuild项目栏
+3、在Run #1 后面命令行中填入：fromelf --bin --output=app.bin .\obj\AD5933_TEST.axf
+4、勾选Run #1前面的选择即可
+
+
+备注：
+命令指令解释为：
+1、fromelf是一个转换工具，可以使用该工具生成bin文件
+2、--bin 表示使用该工具生成bin文件
+2、--output 输出文件
+3、app.bin 指定输出bin的文件名，保存的bin文件此时在当前目录下，也可以指定输出位置
+4、.\obj\AD5933_TEST.axf 指工具依赖于该目录下的指定文件才能生成bin
+
+详细方法见：http://wenku.baidu.com/view/93469dd8ad51f01dc281f127.html
