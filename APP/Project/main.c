@@ -41,18 +41,21 @@
 
 ** 版  本: 1.0
 *******************************************************************/
-void InitOutput(void)
+void InitOutput()
 {
 	uint8_t i;
   for (i = 0; i < 6; i++)
   {
+
     CH[i].channel_open = 1;
-    CH[i].function_code = 0x101;                             
+	CH[i].channel_stop_state = 0;
+	CH[i].channel = i;
+    CH[i].function_code = 0x103;                             
     CH[i].peroid = 200;//peroid_max:4999 peroid_min:100
     CH[i].ss_peroid = 5 * (CH[i].peroid);
-    CH[i].scope = 890;//scope_max:890 scope_min:0
+    CH[i].scope = 50;//scope_max:890 scope_min:0
     CH[i].complex_status = 0;
-		CH[i].led_sta = 1;
+	CH[i].led_sta = 1;
   }
 }
 void BellOnceTime(void)
@@ -75,31 +78,19 @@ void BellOnceTime(void)
 *******************************************************************/
 int main(int argc, char *argv[])
 { 
-//	RCC_ClocksTypeDef  RCC_Clocks; 
+	u8 i = 0;
   STM_EVAL_SYSTEMINIT();  	//初始化系统配置
 
 	BellOnceTime();   //蜂鸣器鸣叫
 //	InitOutput(); //开机就启动输出
-	
-//	RCC_GetClocksFreq(&RCC_Clocks);
-//	printf("\nHCLK___Frequency = %dMhz,\n\
-//PCLK1__Frequency = %dMhz,\n\
-//PCLK2__Frequency = %dMhz,\n\
-//SYSCLK_Frequency = %dMhz\n",\
-//					RCC_Clocks.HCLK_Frequency/1000000,	\
-//					RCC_Clocks.PCLK1_Frequency /1000000,	\
-//					RCC_Clocks.PCLK2_Frequency/1000000,	\
-//					RCC_Clocks.SYSCLK_Frequency/1000000	\
-//	);
-//	do{
-//	
-//	}while();
-  while (1)
+
+  for( ; ; )
   {  
   	HandleRecData();			//处理接收队列数据		
-    ReportState(); 				//心跳检测
-    ErrorCodeLimit();			//错误命令
-    RepeatCodeLimit(); 		//重复命令
+//    ReportState(); 				//心跳检测
+//	  WaveWork();//产生波形的函数
+//    ErrorCodeLimit();		//错误命令
+//    RepeatCodeLimit(); 		//重复命令
   }       
 }
 

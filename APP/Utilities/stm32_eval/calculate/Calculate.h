@@ -217,7 +217,7 @@ uint8_t CheckOutAndCompute(uint8_t Clength, uint8_t *Cdata);
 extern uint8_t WorkQueueData(SqQueue *Q, uint8_t *IsGetWholeData);
 static void HeartBeatTimeOut(void);
 static void GetNewDataCon(void);
-static void wave_output(void);
+ void wave_output(void);
 void WaveWork(void);
 extern void ExecuteCmd(uint8_t *EC_Data);//¥¶¿ÌΩ” ’µΩµƒ÷∏¡
 

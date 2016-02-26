@@ -20,7 +20,7 @@ void ReportState(void)
 	{
 			heart_time_count = 0;
 			state_change(TopDead);           //更改当前状态位上层死机，通信出现故障 
-		SendStatusReply(current_state);
+			SendStatusReply(current_state);
 		  urgstop = TRUE;
 			topdeath = FALSE;
 	}

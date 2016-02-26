@@ -29,13 +29,14 @@
 #include "stm32f10x_tim.h"
 #include "stm32_eval.h"
 
+
 extern void ChannelLed(void);
 
 static uint8_t ch_count = 0;  
 __IO uint32_t TIMx_timecount = 0,
 				 TIMy_timecount = 0,
 				 TIMz_timecount = 0;
-
+u16 pre_remain_count = CAPACITY,cur_count = CAPACITY;
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
@@ -180,7 +181,7 @@ void TIMx_IRQHandler(void)
 			for (ch_count = 0; ch_count < 6; ch_count++)//判定通道是否开启复杂波形，如果是，则对相应通道进行计数
 			{
 				if(CH[ch_count].complex_status)
-					CH[ch_count].time5s_count++;     
+				CH[ch_count].time5s_count++;     
 			}   
 		}
 		for (ch_count = 0; ch_count < 6; ch_count++)//如果通道开启，则对通道的基本波形时间计数
@@ -210,21 +211,22 @@ void TIMy_IRQHandler(void)
  	if (TIM_GetITStatus(TIMy,TIM_IT_Update) != RESET)
 	{
 		TIM_ClearITPendingBit(TIMy, TIM_FLAG_Update);
-    TIMy_timecount++;
+		TIMy_timecount++;
 		if (TIMy_timecount > Time5sCount)		 //定时一个5s时间
 		{
-      TIMy_timecount = 0; 	
+			TIMy_timecount = 0; 	
 				
 			heart_time_count++;
-      if(heart_time_count > MAX_HEART_TIME) //心跳检测最大等待时间
-      {
-        heart_time_count = 0;
-				if (system_start)
-				{
-					topdeath = TRUE;
-				}
-      }
-		}		
+		  if(heart_time_count > MAX_HEART_TIME) //心跳检测最大等待时间
+		  {
+			heart_time_count = 0;
+			if (system_start)
+			{
+				topdeath = TRUE;
+			}
+		  }
+		}	
+	
 	if (RepPar.time_start) //命令重复次数检测，规定时间内重复次数超过设定数值,则认为重复超限，急停设备
 	{
 		 RepPar.time_count++;
@@ -244,16 +246,18 @@ void TIMy_IRQHandler(void)
 			ErrPar.time_start = FALSE;
 		 }	
 	}
-  if (ImpPar.time_start)  //阻抗采集限制时间，超过一定时间没有得到数据返回，则跳过该次采集
-  {
-    ImpPar.time_count++;
-    if (ImpPar.time_count > ImpValTimeLit){
-      ImpPar.time_limit = TRUE;
-      ImpPar.time_count = 0;
-      ImpPar.time_start = FALSE;
-    }
-  }
+	  if (ImpPar.time_start)  //阻抗采集限制时间，超过一定时间没有得到数据返回，则跳过该次采集
+	  {
+		ImpPar.time_count++;
+		if (ImpPar.time_count > ImpValTimeLit){
+		  ImpPar.time_limit = TRUE;
+		  ImpPar.time_count = 0;
+		  ImpPar.time_start = FALSE;
+		}
+	  }
 	led_time_count++;				//指示灯计时器	
+//	  HandleRecData();			//处理接收队列数据	
+	  ReportState(); 				//心跳检测
 	}
 }
 
@@ -277,19 +281,19 @@ void TIMz_IRQHandler(void)
 {
 	/******作为计时使用，0.1ms进入一次*****/
   if (TIM_GetITStatus(TIMz,TIM_IT_Update) != RESET)
-	{
+  {
 		TIM_ClearITPendingBit(TIMz, TIM_FLAG_Update);
 #if(usart_baud == Baud_115200)
-    if ((TIMz_timecount++) > us100(4))//4 old is :us100(4)  ms(30)
+    if ((TIMz_timecount++) > ms(50))//4 old is :us100(4)  ms(30)
 #else
-		if ((TIMz_timecount++) > ms(30))
+	if ((TIMz_timecount++) > ms(30))
 #endif
     {
         TIM_Cmd(TIMz,DISABLE);
         TIMz_timecount = 0;
-				get_whole_data = 1;
-		}			
-	}
+		get_whole_data = 1;
+	}			
+  }
 }
 /******************************************************************
 ** 函数名: TIMy_IRQHandler
@@ -306,14 +310,29 @@ void TIMz_IRQHandler(void)
 *******************************************************************/
 void USARTx_IRQHandler(void)
 {	
-	if (USART_GetITStatus(USARTx,USART_IT_RXNE) != RESET)
+//	if (USART_GetITStatus(USARTx,USART_IT_RXNE) != RESET)
+//	{
+//		EnQueue(&Queue,USART_ReceiveData(USARTx));           	/*  把串口接收的数据放入环形缓冲区   */
+//		USART_ClearITPendingBit(USARTx,USART_IT_RXNE); 
+//		TIM_Cmd(TIMz,DISABLE);
+//		TIM_SetCounter(TIMz,0);
+//		TIM_Cmd(TIMz,ENABLE);
+//	}	
+	
+	if(USART_GetITStatus(USARTx, USART_IT_IDLE) != RESET)
 	{
-		EnQueue(&Queue,USART_ReceiveData(USARTx));           	/*  把串口接收的数据放入环形缓冲区   */
-		USART_ClearITPendingBit(USARTx,USART_IT_RXNE); 
-		TIM_Cmd(TIMz,DISABLE);
-		TIM_SetCounter(TIMz,0);
-		TIM_Cmd(TIMz,ENABLE);
-	}	
+		USART_ClearITPendingBit(USARTx, USART_IT_IDLE);//空闲
+		USARTx->SR;
+		USARTx->DR;
+
+		cur_count = DMA_GetCurrDataCounter(DMA1_Channel6);
+		Queue.front = ( Queue.front + pre_remain_count + CAPACITY - cur_count)%CAPACITY;
+		pre_remain_count = DMA_GetCurrDataCounter(DMA1_Channel6);
+		
+//		USART_SendData(USARTx,Queue.front);
+//		while(USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET); //等待字符发送完毕
+		get_whole_data = 1;
+	}
 }
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */

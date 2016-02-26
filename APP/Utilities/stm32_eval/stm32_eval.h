@@ -17,7 +17,7 @@
 /** @defgroup STM32_EVAL_Exported_Types
   * @{
   */
-
+extern u32 usart_baud;
 typedef enum 
 {
   COM1 = 0,
@@ -199,7 +199,7 @@ extern void STM_CHN_LED_OFF(u8 lednum);
 static void USART_PARA_CONFIGURE(BaudRate_TypeDef baudrate, uint16_t COM);
 static void USART_NVIC_CONFIGURE(uint16_t COM);
 static void USART_GPIO_CONFIGURE(COM_TypeDef COM);
-static void STM_EVAL_COMInit(COM_TypeDef com);
+extern void STM_EVAL_COMInit(COM_TypeDef com);
 static void TIM_NVIC_CONFIGURE(TypeDef_TIM TIM_X);
 static void TIM_PARA_CONFIGURE(TypeDef_TIM  TIM_X, uint16_t timecount);
 static void STM_EVAL_TIMCONFIGURE(uint16_t TimX,uint8_t time);

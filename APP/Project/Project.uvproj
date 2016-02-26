@@ -364,7 +364,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, USE_STM3210E_EVAL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Project;..\Libraries\CMSIS\CM3\CoreSupport;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;..\Utilities\stm32_eval;..\Utilities\stm32_eval\IIC;..\Utilities\stm32_eval\SPI;..\Utilities\stm32_eval\AD5933;..\Utilities\stm32_eval\wave;..\Utilities\stm32_eval\delay;..\Utilities\stm32_eval\calculate;..\Utilities\stm32_eval\PWM</IncludePath>
+              <IncludePath>..\Project;..\Libraries\CMSIS\CM3\CoreSupport;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;..\Utilities\stm32_eval;..\Utilities\stm32_eval\IIC;..\Utilities\stm32_eval\SPI;..\Utilities\stm32_eval\AD5933;..\Utilities\stm32_eval\wave;..\Utilities\stm32_eval\delay;..\Utilities\stm32_eval\calculate;..\Utilities\stm32_eval\DMA</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -601,6 +601,11 @@
               <FileName>pwm.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Utilities\stm32_eval\PWM\pwm.c</FilePath>
+            </File>
+            <File>
+              <FileName>dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utilities\stm32_eval\DMA\dma.c</FilePath>
             </File>
           </Files>
         </Group>

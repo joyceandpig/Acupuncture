@@ -22,8 +22,8 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
 #include "stm32_eval.h"
 #include "AD5933.h"
-#include "pwm.h"
-
+#include "dma.h"
+u32 usart_baud = BaudRate;
 /** @defgroup STM32 Private_Variables
   * @{
   */ 
@@ -122,8 +122,14 @@ static void USART_PARA_CONFIGURE(BaudRate_TypeDef baudrate, uint16_t COM)
   USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;
 
   /* USART configuration */
-	USART_Init(COM_USART[COM], &USART_InitStructure);
-  USART_ITConfig(COM_USART[COM], USART_IT_RXNE, ENABLE);//使能接收中断
+//	USART_Init(COM_USART[COM], &USART_InitStructure);
+//  USART_ITConfig(COM_USART[COM], USART_IT_RXNE, ENABLE);//使能接收中断
+//  USART_Cmd(COM_USART[COM], ENABLE);
+//	while (USART_GetFlagStatus(COM_USART[COM], USART_FLAG_TC) == RESET);/*等待 发送区清空*/
+	
+  DMA_init();
+  USART_Init(COM_USART[COM], &USART_InitStructure);
+  USART_ITConfig(COM_USART[COM], USART_IT_IDLE, ENABLE);//使能接收中断
   USART_Cmd(COM_USART[COM], ENABLE);
 	while (USART_GetFlagStatus(COM_USART[COM], USART_FLAG_TC) == RESET);/*等待 发送区清空*/
 }
@@ -151,9 +157,12 @@ static void USART_NVIC_CONFIGURE(uint16_t COM)
   NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
+	
+	
    /*使能串口的发送和接收中断*/
 //  USART_ITConfig(COM_USART[COM], USART_IT_RXNE, ENABLE);  
 //  USART_ITConfig(COM_USART[COM], USART_IT_TXE, ENABLE);
+	
 }
 /******************************************************************
 ** 函数名:  USART_GPIO_CONFIGURE
@@ -209,7 +218,7 @@ static void USART_GPIO_CONFIGURE(COM_TypeDef COM)
 ** 日  期:
 ** 版  本: 1.0
 *******************************************************************/
-static void STM_EVAL_COMInit(COM_TypeDef com)
+void STM_EVAL_COMInit(COM_TypeDef com)
 {
   USART_GPIO_CONFIGURE(com);                  //串口时钟和引脚配置
   USART_NVIC_CONFIGURE(com);                  //串口中断设置  
@@ -235,8 +244,8 @@ static void TIM_NVIC_CONFIGURE(TypeDef_TIM TIM_X)
     
   RCC_APB1PeriphClockCmd(TIM_NUM_CLK[TIM_X],ENABLE);        /*使能基本定时器2时钟(TIM2)*/	
   NVIC_InitStructure.NVIC_IRQChannel                   = TIM_NUM_IRQn[TIM_X];
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;	/*抢占优先级数字越小优先级越高*/
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0; /*从占优先级号码越小优先级越高*/
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;	/*抢占优先级数字越小优先级越高*/
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 2; /*从占优先级号码越小优先级越高*/
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }
@@ -309,7 +318,7 @@ static void STM_EVAL_TIMInit(void)
 { 
   STM_EVAL_TIMCONFIGURE(Tim2,100);//TIM_Cmd(TIM_NUM[Tim2],DISABLE);//波形产生专用时钟 输入定时时间，单位为us
   STM_EVAL_TIMCONFIGURE(Tim3,100);//TIM_Cmd(TIM_NUM[Tim3],DISABLE);//各种常规计时专用时钟 输入定时时间，单位为us
-  STM_EVAL_TIMCONFIGURE(Tim4,100);TIM_Cmd(TIM_NUM[Tim4],DISABLE);  //串口接收数据专用定时器 输入定时时间，单位为us
+//  STM_EVAL_TIMCONFIGURE(Tim4,100);TIM_Cmd(TIM_NUM[Tim4],DISABLE);  //串口接收数据专用定时器 输入定时时间，单位为us
 }
 
 /******************************************************************
@@ -721,6 +730,7 @@ void STM_EVAL_MCOCLK_OUT(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	STM_EVAL_MCOCLK_DISABLE();
+	STM_EVAL_MCOCLK_ENABLE();
 }
 /******************************************************************
 ** 函数名: STM_EVAL_SYSTEMInit
@@ -746,9 +756,12 @@ void STM_EVAL_SYSTEMINIT(void)
   STM_EVAL_DELAYInit();      //延时函数初始化 
 	STM_EVAL_SPIInit();        //SPI接口初始化
 	STM_EVAL_TLV5608Init();    //Tlv5608芯片控制初始化
+
+	
 	AD5933_Para_Init();     //初始化阻抗采集参数
 	delay_ms(1000);
 	STM_EVAL_MCOCLK_OUT();//阻抗采集时钟源
+	
 //	STM_EVAL_TIM1_PA8_PWM_Init(4,0);
 //	TIM_SetCompare1(TIM1,2);
 }

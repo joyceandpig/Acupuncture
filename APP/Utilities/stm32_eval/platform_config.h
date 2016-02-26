@@ -34,15 +34,15 @@
 typedef enum {FALSE = 0, TRUE = !FALSE} bool;
 
 /**************全局中变量使用及相关定义******************/
-
+extern u32 usart_baud;
 
 #define usart2
-#define usart_baud 115200
+//#define usart_baud 115200
 #define SYSCLOCK_32M //sysclk is 72Mhz or 32Mhz
 
 
 #define WaveHighTime     		2        //一个波形周期内，高电平维持的时间 单位 0.1ms/个 0.05ms
-#define CAPACITY      			30 	       //定义环形缓冲区大小
+#define CAPACITY      			200 	       //定义环形缓冲区大小
 
 #define JumpBootAddress 		0x08000000    //跳转地址，跳转至boot运行
 #define Vector_Offset 			0x5000   //中断重映射，相对于FLASH_BASE地址的偏移量（0x08000000）

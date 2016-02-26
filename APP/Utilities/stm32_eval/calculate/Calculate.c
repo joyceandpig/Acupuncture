@@ -294,8 +294,8 @@ uint8_t DeQueue(SqQueue *Q)
 	{
 		return FALSE;
 	}	
-	Q->items[Q->front] = 0;
-	Q->front = (Q->front + 1)%CAPACITY;
+	Q->items[Q->rear] = 0;
+	Q->rear = (Q->rear + 1)%CAPACITY;
 	Q->size--;
 	return TRUE;
 }
@@ -320,7 +320,7 @@ uint8_t GetFrontDataFromQueue(SqQueue *Q)
 	{
 		return FALSE;
 	}
-	return Q->items[Q->front];
+	return Q->items[Q->rear];
 }
 
 /******************************************************************
@@ -381,7 +381,7 @@ uint8_t ShiftFrontOfQueue(SqQueue *Q)
 uint8_t GetDataFromQueue(SqQueue *Q,uint8_t length_of_frame,uint8_t *data_of_frame)
 {
    uint16_t point,i;
-   point = Q->front;
+   point = Q->rear;
    for (i = 0; i < length_of_frame; i++)
    {
    	 *data_of_frame = Q->items[point];
@@ -405,7 +405,7 @@ uint8_t GetDataFromQueue(SqQueue *Q,uint8_t length_of_frame,uint8_t *data_of_fra
 ** 版  本: 1.0
 *******************************************************************/
 /****************************************************************************/
-static void CloseChannelOutput(void)
+void CloseChannelOutput(void)
 {
   uint8_t CCO_cnt = 0;
   ReadyToUpdata();    //准备控制DA
@@ -875,8 +875,8 @@ uint16_t Arry_Get_CRC16(uint8_t *start_pos, uint8_t usDataLen)
 *******************************************************************/
 uint8_t IsFrameLenRight(SqQueue *Q)
 {
-  if ((Q->items[Q->front] >= 14)&&(Q->items[Q->front] <= PRETREATSIZE)\
-		&& (Q->items[Q->front] <= Q->size) && (Q->size >= 14))
+  if ((Q->items[Q->rear] >= 14)&&(Q->items[Q->rear] <= PRETREATSIZE)\
+		&& (Q->items[Q->rear] <= Q->size) && (Q->size >= 14))
     return TRUE;
   else
     return FALSE;
@@ -923,7 +923,7 @@ uint8_t IsCheckCodeRight(uint8_t *buf)
 void RemoveFrameFromQueue(SqQueue *Q)
 {
   static uint8_t len = 0;
-	len = Q->items[Q->front];
+	len = Q->items[Q->rear];
 
   while(len--)
   {
@@ -1040,10 +1040,10 @@ uint8_t DoJudgeCMDInfo(SqQueue *Q,  uint8_t *IsGetWholeData)
 uint8_t WorkQueueData(SqQueue *Q, uint8_t *IsGetWholeData)
 {
   if (*IsGetWholeData){                												 //是否接收到完整数据
-		Q->size = (Q->rear - Q->front+CAPACITY)%CAPACITY;
+		Q->size = (Q->front - Q->rear+CAPACITY)%CAPACITY;
 		if (IsFrameLenRight(Q)){                                     //帧节的帧长数据不超限	
 			memset(PretreatBuffer,'\0',PRETREATSIZE);
-			GetDataFromQueue(Q,(Q->items[Q->front]),PretreatBuffer);//将队列的数据放入指定数组，
+			GetDataFromQueue(Q,(Q->items[Q->rear]),PretreatBuffer);//将队列的数据放入指定数组，
  			if(DoJudgeCMDInfo(Q,IsGetWholeData)){
 				return TRUE;
 			}

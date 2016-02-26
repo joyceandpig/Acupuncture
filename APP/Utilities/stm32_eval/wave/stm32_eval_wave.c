@@ -173,15 +173,15 @@ static void Dilatational_Wave(uint8_t channel, uint16_t peroid, uint16_t scope) 
 
 ** 版  本: 1.0
 *******************************************************************/
-static void wave_output(void)
+void wave_output(void)
 {	
 	ReadyToUpdata();//拉高，使得LDAC能有变低动作来更改
 	for(count = 0; count < 6; count++)	/*    轮询通道的开启停止状态位   */
 	{			 
 		if (CH[count].channel_open){	        /*  相应通道打开，则产生相应波形  */
 			if(CH[count].led_sta){
-			STM_CHN_LED_ON(CH[count].channel);
-			CH[count].led_sta = 0;
+				STM_CHN_LED_ON(CH[count].channel);
+				CH[count].led_sta = 0;
 			}
 			switch(CH[count].function_code){        //选择波形 
 				case Contious: Continuous_Wave(count,CH[count].peroid,CH[count].scope);break;
@@ -216,7 +216,7 @@ void WaveWork(void)
 {	
 	if (!urgstop){    /******未出现上层重发次数超限的情况则继续产生波形，若出现超限，则不进入波形发生*******/
 		wave_output();
-    LightLed(&led_time_count,Led2);
+		LightLed(&led_time_count,Led2);
 	}else{                          //紧急停止情况，LED闪烁
 		LightLed(&led_time_count,Led4);
 	}
