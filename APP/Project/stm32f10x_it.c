@@ -222,7 +222,7 @@ void TIMy_IRQHandler(void)
 			heart_time_count = 0;
 			if (system_start)
 			{
-				topdeath = TRUE;
+//				topdeath = TRUE;
 			}
 		  }
 		}	

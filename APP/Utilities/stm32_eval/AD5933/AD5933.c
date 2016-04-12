@@ -75,6 +75,7 @@ static void TransformSpanDat(uint8_t *dat, _FeedBack dat1)
   *(dat + 12) = tmp >> 8;
   *(dat + 13) = tmp; 
 }
+
 /******************************************************************
 ** 函数名: TIMy_IRQHandler
 ** 输  入: none
@@ -91,107 +92,114 @@ static void TransformSpanDat(uint8_t *dat, _FeedBack dat1)
 //采集阻抗程序
 void ImpVal(uint16_t Ifunc_code,uint8_t *Idata)
 {
-  uint16_t tmp;
-
+	static uint32_t tmp;
+	static union {
+		u8 temp1;
+		u8 temp2;
+		u8 temp3;
+		u8 temp4;
+		u32 TEMP;
+	}TEM;
+	
   switch(Ifunc_code)
   {
-    case ImpClk:        //时钟
-      if (*(Idata+11) == 2)                    //外部时钟控制位     
-      {  
-				AD5933_Para.CONTROL_REG_BIT3          = 1;            //  1:外部时钟  0：内部时钟
-        AD5933_Para.AD5933_CLK                = 16000000UL;   //时钟频率
-      }
-			else if(*(Idata+11) == 1)              //内部时钟控制位     
-      { 
-				AD5933_Para.CONTROL_REG_BIT3          = 0;           // 1:外部时钟  0：内部时钟
-        AD5933_Para.AD5933_CLK                = 16776000UL;   //时钟频率
-      }
-      break;
-    case ImpConCH:        //参考电阻通道
-      AD5933_Para.ADG714_CHANNEL_NUM = *(Idata+11);
-      break;
-    case ImpInpSign:        //激励信号
-      if (*(Idata+11) == 1)AD5933_Para.CONTROL_REG_BIT10_TO_BIT9 = 0;        //2vpp
-      else if (*(Idata+11) == 2)AD5933_Para.CONTROL_REG_BIT10_TO_BIT9 = 3;   //1vpp
-      else if (*(Idata+11) == 3)AD5933_Para.CONTROL_REG_BIT10_TO_BIT9 =  2;  //400mvpp
-      else if (*(Idata+11) == 4)AD5933_Para.CONTROL_REG_BIT10_TO_BIT9 = 1;   //200mvpp
-      break;
-    case ImpPGA:        //PGA增益
-      if(*(Idata+11) == 1)AD5933_Para.CONTROL_REG_BIT8 = 1;           // x1
-      else if(*(Idata+11) == 5)AD5933_Para.CONTROL_REG_BIT8 = 0;       // x5
-      break;
-    case ImpInitFre:        //起始频率
-      AD5933_Para.START_FREQUENCY = (*(Idata+8))*16777216+(*(Idata+9))*65536+(*(Idata+10))*256+(*(Idata+11));
-      if (AD5933_Para.START_FREQUENCY > 100000000)
-        AD5933_Para.START_FREQUENCY = 100000000;
-      break;
-    case ImpAddFre:        //增量频率
-      AD5933_Para.INC_FREQUENCY = (*(Idata+8))*16777216+(*(Idata+9))*65536+(*(Idata+10))*256+(*(Idata+11));
-      if (AD5933_Para.INC_FREQUENCY > 100000000)
-        AD5933_Para.INC_FREQUENCY = 100000000;
-      break;
-    case ImpNumAddF:        //频率增量数
-      AD5933_Para.FREQUENCY_INC_NUM = (*(Idata+10))*256+(*(Idata+11));
-      if (AD5933_Para.FREQUENCY_INC_NUM > 511)
-        AD5933_Para.FREQUENCY_INC_NUM = 511;
-      break;
-    case BuildTime:        //建立时间周期
-      AD5933_Para.BUILD_TIME_CYCLES = (*(Idata+10))*256+(*(Idata+11));
-      if (AD5933_Para.BUILD_TIME_CYCLES > 2044)
-        AD5933_Para.BUILD_TIME_CYCLES = 2044;
-      break;
-    case ImpMeaStart:        //开始阻抗测量
-			
- 			GPIO_LOW(GPIO_LED,LED3);
-			STM_EVAL_MCOCLK_ENABLE();//open ad5933 clk,The CLk From the PORTA8_MCO_OUTPUT
-			switch(*(Idata+8))
-			{
-				case 1:AD5933_Para.ADG714_CHANNEL_NUM = C_H(1);break;//0x02  100
-				case 2:AD5933_Para.ADG714_CHANNEL_NUM = C_H(2);break;//0x04  1k
-				case 3:AD5933_Para.ADG714_CHANNEL_NUM = C_H(3);break;//0x08  10k
-				case 4:AD5933_Para.ADG714_CHANNEL_NUM = C_H(5);break;//0x20  100k
-				case 5:AD5933_Para.ADG714_CHANNEL_NUM = C_H(6);break;//0x40  1M
-				default:break;
-			}
-			AD5933_Init();
-			Test();
-			STM_EVAL_MCOCLK_DISABLE();//close AD5933 CLK
-			GPIO_HIGH(GPIO_LED,LED3);
-      break;
-    case ImpMeaStop:        //停止阻抗测量
+	case ImpClk:        //时钟
+	  if (*(Idata+11) == 2)                    //外部时钟控制位     
+	  {  
+		AD5933_Para.CONTROL_REG_BIT3          = 1;            //  1:外部时钟  0：内部时钟
+		AD5933_Para.AD5933_CLK                = 16000000UL;   //时钟频率
+	  }
+	  else if(*(Idata+11) == 1)              //内部时钟控制位     
+	  { 
+		AD5933_Para.CONTROL_REG_BIT3          = 0;           // 1:外部时钟  0：内部时钟
+		AD5933_Para.AD5933_CLK                = 16776000UL;   //时钟频率
+	  }
+	  break;
+	case ImpConCH:        //参考电阻通道
+	  AD5933_Para.ADG714_CHANNEL_NUM = *(Idata+11);
+	  break;
+	case ImpInpSign:        //激励信号
+	  if (*(Idata+11) == 1)AD5933_Para.CONTROL_REG_BIT10_TO_BIT9 = 0;        //2vpp
+	  else if (*(Idata+11) == 2)AD5933_Para.CONTROL_REG_BIT10_TO_BIT9 = 3;   //1vpp
+	  else if (*(Idata+11) == 3)AD5933_Para.CONTROL_REG_BIT10_TO_BIT9 =  2;  //400mvpp
+	  else if (*(Idata+11) == 4)AD5933_Para.CONTROL_REG_BIT10_TO_BIT9 = 1;   //200mvpp
+	  break;
+	case ImpPGA:        //PGA增益
+	  if(*(Idata+11) == 1)AD5933_Para.CONTROL_REG_BIT8 = 1;           // x1
+	  else if(*(Idata+11) == 5)AD5933_Para.CONTROL_REG_BIT8 = 0;       // x5
+	  break;
+	case ImpInitFre:        //起始频率
+	  AD5933_Para.START_FREQUENCY = (*(Idata+8))*16777216+(*(Idata+9))*65536+(*(Idata+10))*256+(*(Idata+11));
+	  if (AD5933_Para.START_FREQUENCY > 100000000)
+		AD5933_Para.START_FREQUENCY = 100000000;
+	  break;
+	case ImpAddFre:        //增量频率
+	  AD5933_Para.INC_FREQUENCY = (*(Idata+8))*16777216+(*(Idata+9))*65536+(*(Idata+10))*256+(*(Idata+11));
+	  if (AD5933_Para.INC_FREQUENCY > 100000000)
+		AD5933_Para.INC_FREQUENCY = 100000000;
+	  break;
+	case ImpNumAddF:        //频率增量数
+	  AD5933_Para.FREQUENCY_INC_NUM = (*(Idata+10))*256+(*(Idata+11));
+	  if (AD5933_Para.FREQUENCY_INC_NUM > 511)
+		AD5933_Para.FREQUENCY_INC_NUM = 511;
+	  break;
+	case BuildTime:        //建立时间周期
+	  AD5933_Para.BUILD_TIME_CYCLES = (*(Idata+10))*256+(*(Idata+11));
+	  if (AD5933_Para.BUILD_TIME_CYCLES > 2044)
+		AD5933_Para.BUILD_TIME_CYCLES = 2044;
+	  break;
+	case ImpMeaStart:        //开始阻抗测量
+		GPIO_LOW(GPIO_LED,LED3);
+		STM_EVAL_MCOCLK_ENABLE();//open ad5933 clk,The CLk From the PORTA8_MCO_OUTPUT
+		switch(*(Idata+8))
+		{														//0x01
+			case 1:AD5933_Para.ADG714_CHANNEL_NUM = C_H(1);break;//0x02  100
+			case 2:AD5933_Para.ADG714_CHANNEL_NUM = C_H(2);break;//0x04  1k
+			case 3:AD5933_Para.ADG714_CHANNEL_NUM = C_H(3);break;//0x08  10k
+			case 4:AD5933_Para.ADG714_CHANNEL_NUM = C_H(5);break;//0x20  100k
+			case 5:AD5933_Para.ADG714_CHANNEL_NUM = C_H(6);break;//0x40  1M
+			default:break;
+		}
+		AD5933_Init();
+		Test();
+		STM_EVAL_MCOCLK_DISABLE();//close AD5933 CLK
+	//		GPIO_HIGH(GPIO_LED,LED3);
+	  break;
+	case ImpMeaStop:        //停止阻抗测量
 			STM_EVAL_MCOCLK_DISABLE();
-      break;
-    case ImpMeaReFre:        //递增频率测量
-      AD5933_Para.INC_AND_REP_FRE = 0;
-      Test();
-      break;
-    case ImpMeaAddFre:        //频率重复测量
-      AD5933_Para.INC_AND_REP_FRE = 1;
-      Test();
-      break;
-    case ImpMeaTemrt:        //测量温度
-      break;
-    case ImpPowerSave:        //省电模式
-      break;
-    case ImpIdleMode:        //待机模式
-      break;
-    case ImpReadImp:        //读取阻抗测量值
-			GPIO_LOW(GPIO_LED,LED4);
+	  break;
+	case ImpMeaReFre:        //递增频率测量
+	  AD5933_Para.INC_AND_REP_FRE = 0;
+	  Test();
+	  break;
+	case ImpMeaAddFre:        //频率重复测量
+	  AD5933_Para.INC_AND_REP_FRE = 1;
+	  Test();
+	  break;
+	case ImpMeaTemrt:break;        //测量温度
+	  
+	case ImpPowerSave:break;        //省电模式
+	  
+	case ImpIdleMode:break;        //待机模式
+	  
+	case ImpReadImp:        //读取阻抗测量值
+	//			GPIO_LOW(GPIO_LED,LED4);
 			TransformSpanDat(AckBuf[0],AD5933_Para.FeedBackVal);
 			SendCmdReply(AckBuf[0],14);
-			GPIO_HIGH(GPIO_LED,LED4);
-      break;
-    case ImpReadTempr:        //读取环境温度值
+			GPIO_HIGH(GPIO_LED,LED3);
+	  break;
+	case ImpReadTempr:        //读取环境温度值
 			tmp = AD5933_GetTemperatureMeasureVal();
+
 		  AckBuf[1][8] = tmp;
 		  AckBuf[1][9] = tmp >> 8;
 			AckBuf[1][10] = tmp>>16;
 		  AckBuf[1][11] = tmp >> 24;
 			SendCmdReply(AckBuf[1],14);
 		
-      break;
-    default:
-      break;
+	  break;
+	default:
+	  break;
   } 
 }
 void AD5933_Para_Init(void)           //AD5933的初始化的各种参数设置
@@ -473,70 +481,75 @@ signed short int TodoAverage(signed short int *Data,unsigned char num)
     {
       sum += *(Data + aver_i);
     } 
-    average = (signed short int)(sum / num - 2 * lost_val);
+    average = (signed short int)(sum / (num - 2 * lost_val));
   }
-  else 
+  else if(num ==2)
   {
     average = (*Data + *(Data+1))/num;
   }
+  else
+  {
+	average = *Data;
+  }
   return average;
 }
-#define MEAS_TIME	10	 //测量次数
+#define MEAS_TIME	1	 //测量次数
 //采集阻抗
 unsigned long int Test(void)
 {
-  unsigned char get_val = 0,get_val_count = 0;
-  unsigned short int tmp = 0;
+	unsigned char get_val = 0,get_val_count = 0;
+	unsigned short int tmp = 0;
   
-  double Range = 0.0;           //幅度值
+	double Range = 0.0;           //幅度值
 
 	unsigned char t_i,t_j,val; 
-  signed short int real_tmp[MEAS_TIME] = {0};//实部值缓存
+	signed short int real_tmp[MEAS_TIME] = {0};//实部值缓存
 	signed short int imag_tmp[MEAS_TIME] = {0};//虚部值缓存
 	signed short int T_imag_Val = 0;
 	signed short int T_real_Val = 0;
 
-		ImpPar.time_start = TRUE;
-		AD5933_ConsultRChoice(AD5933_Para.ADG714_CHANNEL_NUM);   //选择参考电阻通道 
+	ImpPar.time_start = TRUE;
+	AD5933_ConsultRChoice(AD5933_Para.ADG714_CHANNEL_NUM);   //选择参考电阻通道 
     AD5933_StartImpMeasure();         //开始阻抗采集    进入待机模式,配置激励频率参数，准备阻抗采集。
 
     do
     {
     	for(t_i = 0; t_i < MEAS_TIME; t_i++)//MEAS_TIME次测量取平均
     	{
-//        delay_us(8000);
-    		tmp = AD5933_GetStatus();
-//				delay_us(8000);
+    	tmp = AD5933_GetStatus();
         if(tmp == 2)        //测量完成,数值转换成功
         {
-          get_val = 1;
-          
-          T_imag_Val = AD5933_GetImpMeasure_ImagVal();//虚部,原码存储
-          T_real_Val = AD5933_GetImpMeasure_RealVal();//实部,原码存储
+            get_val = 1;
+            
+            T_imag_Val = AD5933_GetImpMeasure_ImagVal();//虚部,原码存储
+            T_real_Val = AD5933_GetImpMeasure_RealVal();//实部,原码存储
 
-    		  real_tmp[get_val_count] = T_real_Val;		   		  //储存到缓存
-    		  imag_tmp[get_val_count] = T_imag_Val;
-          get_val_count++;
-//					delay_us(3000);
+			real_tmp[get_val_count] = T_real_Val;		   		  //储存到缓存
+			imag_tmp[get_val_count] = T_imag_Val;
+            get_val_count++;
   
-          AD5933_RepeatFrequency();//重复频率
+            AD5933_RepeatFrequency();//重复频率
+			
         } 
         if (ImpPar.time_limit)
         {
           ImpPar.time_limit = FALSE;
           return FALSE; 
         }
+//		delay_ms(5);
     	}
     }while(get_val != 1);  //全部测量完成
-//		delay_us(8000);
   
-    TodoRank(imag_tmp,get_val_count);       //虚部排序
-    TodoRank(real_tmp,get_val_count);       //实部排序
-  
-    AD5933_Para.FeedBackVal.collect_val_imag = TodoAverage(imag_tmp,get_val_count);    //虚部求平均值
-    AD5933_Para.FeedBackVal.collect_val_real = TodoAverage(real_tmp,get_val_count);    //实部求平均值
+//    TodoRank(imag_tmp,get_val_count);       //虚部排序
+//    TodoRank(real_tmp,get_val_count);       //实部排序
+// 
+//    AD5933_Para.FeedBackVal.collect_val_imag = TodoAverage(imag_tmp,get_val_count);    //虚部求平均值
+//    AD5933_Para.FeedBackVal.collect_val_real = TodoAverage(real_tmp,get_val_count);    //实部求平均值
 		
-    get_val_count = 0;
+	AD5933_Para.FeedBackVal.collect_val_imag = imag_tmp[0];
+  AD5933_Para.FeedBackVal.collect_val_real = real_tmp[0];
+	
+	get_val_count = 0;
     AD5933_PowerSave();//省电模式
 		
   ImpPar.time_limit = FALSE; //全部档位都测定完成或者采集到有效数据，则关闭阻抗采集计时

@@ -166,7 +166,72 @@
           <Name>-U17935099 -O78 -S9 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(1BA01477) -L00(4) -TO18 -TC72000000 -TP21 -TDS800B -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC800 -FN1 -FF0STM32F10x_512.FLM -FS08000000 -FL080000 -FP0($$Device:STM32F103RC$Flash\STM32F10x_512.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>163</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134245628</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>G:\盲脕脨脪驴脝录录\脧卯脛驴\脮毛戮脛脰脦脕脝脪脟\v4.0 stm32+脩露脦陋脙忙掳氓\脠铆录镁麓煤脗毛\CodeWithGithub\Acupuncture\APP\Utilities\stm32_eval\AD5933\AD5933.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\AD5933_TEST\../Utilities/stm32_eval/AD5933/AD5933.c\163</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>541</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134250286</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>G:\盲脕脨脪驴脝录录\脧卯脛驴\脮毛戮脛脰脦脕脝脪脟\v4.0 stm32+脩露脦陋脙忙掳氓\脠铆录镁麓煤脗毛\CodeWithGithub\Acupuncture\APP\Utilities\stm32_eval\AD5933\AD5933.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\AD5933_TEST\../Utilities/stm32_eval/AD5933/AD5933.c\541</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>531</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134250250</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>G:\盲脕脨脪驴脝录录\脧卯脛驴\脮毛戮脛脰脦脕脝脪脟\v4.0 stm32+脩露脦陋脙忙掳氓\脠铆录镁麓煤脗毛\CodeWithGithub\Acupuncture\APP\Utilities\stm32_eval\AD5933\AD5933.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\AD5933_TEST\../Utilities/stm32_eval/AD5933/AD5933.c\531</Expression>
+        </Bp>
+        <Bp>
+          <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>535</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134250262</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>G:\盲脕脨脪驴脝录录\脧卯脛驴\脮毛戮脛脰脦脕脝脪脟\v4.0 stm32+脩露脦陋脙忙掳氓\脠铆录镁麓煤脗毛\CodeWithGithub\Acupuncture\APP\Utilities\stm32_eval\AD5933\AD5933.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\AD5933_TEST\../Utilities/stm32_eval/AD5933/AD5933.c\535</Expression>
+        </Bp>
+      </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -866,7 +931,7 @@
 
   <Group>
     <GroupName>Doc</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

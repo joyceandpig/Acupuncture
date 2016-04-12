@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
 		key = 0;
 	}
 	
+ 
 //	while (timelimit-- > 0){
 //    while(USART_GetFlagStatus(USART1, USART_FLAG_RXNE) != RESET)
 //			{  //µÈ´ýÐÅºÅÁ¿   

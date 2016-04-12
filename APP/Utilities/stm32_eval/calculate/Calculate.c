@@ -266,9 +266,7 @@ static uint8_t IsEmpty(SqQueue *Q)
 uint8_t EnQueue(SqQueue *Q, uint8_t data)
 {
 	if (IsFull(Q))
-	{
 		return FALSE;
-	}	
 	Q->items[Q->rear] = data;
 	Q->size++;
 	Q->rear = (Q->rear + 1)%CAPACITY;
@@ -1040,20 +1038,19 @@ uint8_t DoJudgeCMDInfo(SqQueue *Q,  uint8_t *IsGetWholeData)
 uint8_t WorkQueueData(SqQueue *Q, uint8_t *IsGetWholeData)
 {
   if (*IsGetWholeData){                												 //是否接收到完整数据
-		Q->size = (Q->front - Q->rear+CAPACITY)%CAPACITY;
-		if (IsFrameLenRight(Q)){                                     //帧节的帧长数据不超限	
-			memset(PretreatBuffer,'\0',PRETREATSIZE);
-			GetDataFromQueue(Q,(Q->items[Q->rear]),PretreatBuffer);//将队列的数据放入指定数组，
- 			if(DoJudgeCMDInfo(Q,IsGetWholeData)){
-				return TRUE;
-			}
-		}
-		else{
-			DeQueue(Q);                                       		//若帧长超限，则去除帧长位，继续进行各项判定     
-			JudgeComplete(Q,IsGetWholeData);
-		}
+	Q->size = (Q->front - Q->rear+CAPACITY)%CAPACITY;
+	if (IsFrameLenRight(Q)){                                     //帧节的帧长数据不超限	
+		memset(PretreatBuffer,'\0',PRETREATSIZE);
+		GetDataFromQueue(Q,(Q->items[Q->rear]),PretreatBuffer);//将队列的数据放入指定数组，
+		if(DoJudgeCMDInfo(Q,IsGetWholeData))
+			return TRUE;
 	}
-	return FALSE;
+	else{
+		DeQueue(Q);                                       		//若帧长超限，则去除帧长位，继续进行各项判定     
+		JudgeComplete(Q,IsGetWholeData);
+	}
+  }
+  return FALSE;
 }
 
 /******************************************************************

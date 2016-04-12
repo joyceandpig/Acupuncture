@@ -74,12 +74,12 @@ void STM_CHN_LED_ON(u8 lednum)
 {
 	switch(lednum)
 	{
-		case 0:STM_CHN_LED6 = 0;break;
-		case 1:STM_CHN_LED5 = 0;break;
-		case 2:STM_CHN_LED4 = 0;break;
-		case 3:STM_CHN_LED3 = 0;break;
-		case 4:STM_CHN_LED2 = 0;break;
-		case 5:STM_CHN_LED1 = 0;break;
+		case 0:STM_CHN_LED6 = 1;break;
+		case 1:STM_CHN_LED5 = 1;break;
+		case 2:STM_CHN_LED4 = 1;break;
+		case 3:STM_CHN_LED3 = 1;break;
+		case 4:STM_CHN_LED2 = 1;break;
+		case 5:STM_CHN_LED1 = 1;break;
 		default:break;
 	}
 }
@@ -87,12 +87,12 @@ void STM_CHN_LED_OFF(u8 lednum)
 {
 	switch(lednum)
 	{
-		case 0:STM_CHN_LED6 = 1;break;
-		case 1:STM_CHN_LED5 = 1;break;
-		case 2:STM_CHN_LED4 = 1;break;
-		case 3:STM_CHN_LED3 = 1;break;
-		case 4:STM_CHN_LED2 = 1;break;
-		case 5:STM_CHN_LED1 = 1;break;
+		case 0:STM_CHN_LED6 = 0;break;
+		case 1:STM_CHN_LED5 = 0;break;
+		case 2:STM_CHN_LED4 = 0;break;
+		case 3:STM_CHN_LED3 = 0;break;
+		case 4:STM_CHN_LED2 = 0;break;
+		case 5:STM_CHN_LED1 = 0;break;
 		default:break;
 	}
 }
@@ -371,7 +371,7 @@ static void STM_EVAL_CHANNEL_LED(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 		//IO口速度为50MHz
   GPIO_Init(GPIOB, &GPIO_InitStructure);					 				//根据设定参数初始化
 	
-  GPIO_SetBits(GPIOB,
+  GPIO_ResetBits(GPIOB,
 	            GPIO_Pin_0 | GPIO_Pin_1 | \
 							GPIO_Pin_3 
 						  );																					//PC0:PC3 输出高
@@ -383,7 +383,7 @@ static void STM_EVAL_CHANNEL_LED(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 		//IO口速度为50MHz
   GPIO_Init(GPIOA, &GPIO_InitStructure);					 				//根据设定参数初始化
 	
-  GPIO_SetBits(GPIOA,
+  GPIO_ResetBits(GPIOA,
 	            GPIO_Pin_4 | GPIO_Pin_6 | \
 							GPIO_Pin_15 
 						  );

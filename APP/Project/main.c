@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 	u8 i = 0;
   STM_EVAL_SYSTEMINIT();  	//初始化系统配置
 
-	BellOnceTime();   //蜂鸣器鸣叫
+//	BellOnceTime();   //蜂鸣器鸣叫
 //	InitOutput(); //开机就启动输出
 
   for( ; ; )

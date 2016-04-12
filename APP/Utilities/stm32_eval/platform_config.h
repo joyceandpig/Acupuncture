@@ -31,8 +31,8 @@
  #define USE_STM3210E_EVAL
 #endif
 
-typedef enum {FALSE = 0, TRUE = !FALSE} bool;
-
+typedef enum {FALSE = 0, TRUE = !FALSE,Failture = 0,Success = !Failture} bool,Result_Judge;
+typedef enum{NoError,Error}Result_Error;
 /**************全局中变量使用及相关定义******************/
 extern u32 usart_baud;
 
@@ -59,8 +59,8 @@ extern u32 usart_baud;
 #define ErrTimeLit 							5000            //错误命令判定限定时间  单位：0.1ms/个
 #define ORDER_REPEAT_UP_LIMIT		10	  		  //串口命令重复次数上限
 #define RepTimeLit 							5000     		//重复命令判定限定时间，单位：0.1ms/个
-#define ImpValTimeLit 					1000     //阻抗采集限定时间，单位：0.1ms/个
-#define BaudRate 								115200                		//设置串口波特率
+#define ImpValTimeLit 					10000     //阻抗采集限定时间，单位：0.1ms/个
+#define BaudRate 						115200 			//设置串口波特率
 
 #define CH_SUM  								6	                //通道个数
 #define DATA_SUM 								6	                //参数数据的个数
